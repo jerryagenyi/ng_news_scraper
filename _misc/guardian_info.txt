@@ -1,0 +1,14 @@
+I have the list of categories/subcategories with their URL. I also know that the articles in the archive for each category/subcategory page has the following structure:
+
+main content area:
+"body > div.content.page-content > main > div > div.category-main". And inside this is the TITLE
+with the structure below: 
+
+<div class="headline">
+                <span class="title" data-field="title"><a href="https://guardian.ng/news/nigeria/netizens-urge-ogun-gov-to-sign-death-warrant-of-fatinoye-familys-killers/" data-field="title-link">Netizens urge Ogun gov to sign death warrant of Fatinoye family’s killers</a></span>
+            </div>
+
+Then the load more button has the strucutre: 
+<button class="load-more-button" style="display: block;">&nbsp;<span class="load-more-label">Load more</span><span class="loading-indicator"></span>&nbsp;</button>
+
+Although some categories like METRO doesn't have 'load-more' button nor does it have pagination (https://guardian.ng/category/news/nigeria/metro/)...I am not sure it if was the designers mistake or they don't have much articles. But I am sure our future implementation that checks if anything has changed in the website should be able to catch it when they implement anything new.

@@ -1,0 +1,6 @@
+# Personal Project Tracker
+# =======================
+# This file is for my personal use to track progress, notes, and reminders for the ng_news_scraper project.
+# It's not intended to be a public-facing document, but rather a personal reference guide.
+# =======================
+
