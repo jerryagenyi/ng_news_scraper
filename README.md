@@ -1,6 +1,6 @@
 # README.md
 
-# Nigerian News AI Assistant - ng_news_scraper
+# Nigerian News AI Assistant (Data Collection Phase)
 
 A comprehensive news scraping and AI analysis platform focused on Nigerian news sources.
 
@@ -89,5 +89,5 @@ ng_news_scraper/
 
 ## Team Members
 
-- [Kelvin Bawa](https://github.com/kelvinbawa) - Project Lead
-- [Jeremiah Agenyi](https://github.com/jerryagenyi) - Project Assistant
+- [Kelvin Bawa](https://github.com/kelvinbawa) - Project Mentor
+- [Jeremiah Agenyi](https://github.com/jerryagenyi) - Project Lead
