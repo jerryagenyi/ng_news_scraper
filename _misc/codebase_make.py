@@ -12,4 +12,4 @@ def concatenate_files(output_file):
                             output.write(input_file.read())
                             output.write('\n\n')
 
-concatenate_files('../codebase.py')
+concatenate_files('../_misc/codebase.py')

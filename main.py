@@ -1,4 +1,4 @@
-# 4. main.py (updated for Scrapy)
+# main.py (updated for Scrapy)
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from config.settings import SCRAPER_SETTINGS

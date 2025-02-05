@@ -1,4 +1,4 @@
-# 3. config/settings.py
+# config/settings.py
 SCRAPER_SETTINGS = {
     # Scraper settings
     'ROBOTSTXT_OBEY': True,

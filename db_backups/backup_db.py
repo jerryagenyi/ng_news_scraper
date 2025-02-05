@@ -1,4 +1,3 @@
-# ./backup_db.py
 #backup_db.py
 
 import psycopg2
@@ -36,4 +35,3 @@ with open('backup.sql', 'w') as f:
 # Close the cursor and connection
 cur.close()
 conn.close()
-
