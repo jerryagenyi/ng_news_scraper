@@ -1,0 +1,171 @@
+.
+├── .DS_Store
+├── .git
+│   ├── COMMIT_EDITMSG
+│   ├── FETCH_HEAD
+│   ├── HEAD
+│   ├── ORIG_HEAD
+│   ├── config
+│   ├── description
+│   ├── hooks
+│   │   ├── applypatch-msg.sample
+│   │   ├── commit-msg.sample
+│   │   ├── fsmonitor-watchman.sample
+│   │   ├── post-update.sample
+│   │   ├── pre-applypatch.sample
+│   │   ├── pre-commit.sample
+│   │   ├── pre-merge-commit.sample
+│   │   ├── pre-push.sample
+│   │   ├── pre-rebase.sample
+│   │   ├── pre-receive.sample
+│   │   ├── prepare-commit-msg.sample
+│   │   ├── push-to-checkout.sample
+│   │   └── update.sample
+│   ├── index
+│   ├── info
+│   │   └── exclude
+│   ├── logs
+│   │   ├── HEAD
+│   │   └── refs
+│   │       ├── heads
+│   │       │   └── main
+│   │       └── remotes
+│   │           └── origin
+│   │               ├── HEAD
+│   │               └── main
+│   ├── objects
+│   │   ├── 06
+│   │   │   ├── 8c8e719efe3bc86bcedc1bd200dc3813937ffb
+│   │   │   └── e1b25b4d671cb4095b564f2c0793b22ca5135c
+│   │   ├── 08
+│   │   │   └── c98f96180de99757d4c8f83912d0faee8b0be7
+│   │   ├── 13
+│   │   │   └── 9e4499ae7d5ede30cc12b18c1e1e5ac296137f
+│   │   ├── 27
+│   │   │   └── a870cb5b1447fb4fb0ca2464c6b96ee06d15bc
+│   │   ├── 33
+│   │   │   └── 5d521538c61d760ed948e78e534f055f2ce710
+│   │   ├── 3e
+│   │   │   └── 2de789f9043b57ce968091b1b7d858e050742f
+│   │   ├── 42
+│   │   │   └── 344ecd1eacefa875eaf6ff6fd10eb9840178f8
+│   │   ├── 44
+│   │   │   ├── 8166b28ef1a3331bb420bbeed1ed0027359b63
+│   │   │   └── c46e4eeb9819897dc9bf2bc6c8fa75d8d96eca
+│   │   ├── 48
+│   │   │   └── c00e74706b8dc509b50ac0e81e20a9f7f48ba9
+│   │   ├── 4d
+│   │   │   └── 4a014f1397c5e26986cf20307e2822b158692c
+│   │   ├── 4e
+│   │   │   └── 3790e6773c10d701dba4b84cdb607c841d7cba
+│   │   ├── 55
+│   │   │   └── b44d3c5e5a36c84ec7750bbe31abc75499a79c
+│   │   ├── 5e
+│   │   │   └── 6cddfbd99095c308042436710f928120b6184e
+│   │   ├── 65
+│   │   │   └── c4963c02b7745a054b42f012f5b9e3a6cb0308
+│   │   ├── 71
+│   │   │   └── 8d4ecb63bd50c552bc5932f754965f462c831e
+│   │   ├── 78
+│   │   │   └── 714fe3ca5693c45238e7c68ecf2399956c0d50
+│   │   ├── 80
+│   │   │   └── 877bb5cd499e67ccb8f081f692004c9d4994a6
+│   │   ├── 81
+│   │   │   └── 785f451e599326769aece117493c4e4eca158a
+│   │   ├── 82
+│   │   │   └── c0fa8c9635b90c7232e107c6a47238c1977d1d
+│   │   ├── 86
+│   │   │   └── 136ec7168bbc44cd2188fbb274701ca999d166
+│   │   ├── 88
+│   │   │   └── fefa3f44237657904be28ff179cfb4a4960218
+│   │   ├── 89
+│   │   │   └── 22fc49070de25256d155afa980322072b0bba1
+│   │   ├── 8a
+│   │   │   └── cfdf34325eba9fe1817b4e53f528d90e43c386
+│   │   ├── 8b
+│   │   │   └── 2813f4d6de1dc62003e48acd3bdaef50c3ad2b
+│   │   ├── 8c
+│   │   │   └── 0e51c832d0cc0422b896bb099ccff26faf7bdb
+│   │   ├── 8e
+│   │   │   └── b3682fc2b07cd867d7f22d0360266305421b80
+│   │   ├── 90
+│   │   │   └── 8a897427adcf2489b2f09699253693b900e4a9
+│   │   ├── 91
+│   │   │   └── 7f310ddd7c768da2f0adc9f77650728502d7e7
+│   │   ├── 92
+│   │   │   └── 3e65e2055d38b83b53c61074f24406686b6fd0
+│   │   ├── 93
+│   │   │   └── e65ebde63b5742ad5df9d63529e20a52b761f5
+│   │   ├── 9c
+│   │   │   └── 4732e068aa1713ff502905aa2761f978338b76
+│   │   ├── a0
+│   │   │   └── 2a616abcc4692b8ce03066aea427464141d0b3
+│   │   ├── a7
+│   │   │   └── 72e101bde50a0fb0bcccdd3d7d8525dc280068
+│   │   ├── ab
+│   │   │   └── 77491472852b77d03ccc194b3dd23dae5523b7
+│   │   ├── ac
+│   │   │   └── f7166dade6b06df2690a6393f530f86ecd4361
+│   │   ├── ad
+│   │   │   └── be8cad7bb0a958c8105da8ce00f98496060306
+│   │   ├── af
+│   │   │   └── 0106c4f38655af11e3093e62556e5dc6311d20
+│   │   ├── c3
+│   │   │   └── 65dbd3e799ed03185bc5ec9b7fdcb05e528e58
+│   │   ├── c9
+│   │   │   └── 351aa9086b1819d421e32095e56a8eab495ee9
+│   │   ├── d1
+│   │   │   └── 8bbca8dc429c98604535d8134158fbf4319668
+│   │   ├── d2
+│   │   │   └── eb465227f82a220fc071783f20ae934145037b
+│   │   ├── d7
+│   │   │   └── 7ce2a56892c929fc7363b4968a4b1402ed476e
+│   │   ├── d9
+│   │   │   └── 3bfce9ca6d28385a873aa9ab7dab19ba6e344b
+│   │   ├── da
+│   │   │   └── e92e525881b4834fa7efb3f15492acad1b4ef4
+│   │   ├── df
+│   │   │   ├── 36667c6bb9ca995225360fbbdc3e8d321b8594
+│   │   │   └── f12781f798ff0000d832193d03432c2c5d28c8
+│   │   ├── e1
+│   │   │   └── 47ed69812197504bb9ce9f8a35027ad5c80821
+│   │   ├── e6
+│   │   │   ├── 0e93ff451f6ed12aec8f935cc2a0a7cfd1885b
+│   │   │   ├── 9de29bb2d1d6434b8b29ae775ad8c2e48c5391
+│   │   │   └── e0ae4fadd8d3696e38382d8e59f5c520021106
+│   │   ├── f3
+│   │   │   └── 72d3f3cb7e1d6ff2e6de7d6e24c1738b5544ce
+│   │   ├── ff
+│   │   │   └── 036d50e240371b8ec20a6e54a9821cd4dbb6f8
+│   │   ├── info
+│   │   └── pack
+│   └── refs
+│       ├── heads
+│       │   └── main
+│       ├── remotes
+│       │   └── origin
+│       │       ├── HEAD
+│       │       └── main
+│       └── tags
+├── .gitignore
+├── config
+│   └── settings.py
+├── main.py
+├── models
+│   ├── init_db.py
+│   └── models.py
+├── project_structure_output_tree.txt
+└── scrapers
+    ├── middlewares
+    │   └── rotate_useragent.py
+    ├── pipelines
+    │   └── sql_pipeline.py
+    ├── selenium_handlers
+    │   ├── base_dynamic_loader.py
+    │   └── guardian_dynamic_loader.py
+    └── spiders
+        ├── base_news_spider.py
+        ├── guardian_spider.py
+        └── punch_spider.py
+
+73 directories, 96 files
