@@ -89,5 +89,5 @@ ng_news_scraper/
 
 ## Team Members
 
-- Kelvin Bawa - Project Lead
-- Jeremiah Agenyi - Project Assistant
+- [Kelvin Bawa](https://github.com/kelvinbawa) - Project Lead
+- [Jeremiah Agenyi](https://github.com/jerryagenyi) - Project Assistant
