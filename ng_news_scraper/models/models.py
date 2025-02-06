@@ -1,4 +1,11 @@
-# models/models.py - Corrected version
+# ng_news_scraper/models/models.py
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from datetime import datetime
+
+Base = declarative_base()  # Add this line before defining models
+
 class Category(Base):
     __tablename__ = 'categories'
     category_id = Column(Integer, primary_key=True)

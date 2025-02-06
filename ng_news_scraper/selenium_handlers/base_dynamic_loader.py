@@ -1,13 +1,13 @@
-# scrapers/selenium_handlers/base_dynamic_loader.py
+# ng_news_scraper/selenium_handlers/base_dynamic_loader.py
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 import logging
 
 class BaseDynamicLoader:
     def __init__(self):
-        self.driver = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")  # Run in headless mode
+        self.driver = webdriver.Chrome(options=chrome_options)
         self.logger = logging.getLogger(__name__)
     
     def load_more_content(self, url):

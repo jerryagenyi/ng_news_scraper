@@ -1,22 +1,23 @@
 .
-├── config
-│   └── settings.py
 ├── main.py
-├── models
-│   ├── init_db.py
-│   └── models.py
-├── project_structure_output_tree.txt
-└── scrapers
-    ├── middlewares
-    │   └── rotate_useragent.py
-    ├── pipelines
-    │   └── sql_pipeline.py
-    ├── selenium_handlers
-    │   ├── base_dynamic_loader.py
-    │   └── guardian_dynamic_loader.py
-    └── spiders
-        ├── base_news_spider.py
-        ├── guardian_spider.py
-        └── punch_spider.py
+├── ng_news_scraper
+│   ├── config
+│   │   └── settings.py
+│   ├── items.py
+│   ├── middlewares.py
+│   ├── models
+│   │   ├── init_db.py
+│   │   └── models.py
+│   ├── pipelines.py
+│   ├── selenium_handlers
+│   │   ├── base_dynamic_loader.py
+│   │   └── guardian_dynamic_loader.py
+│   ├── settings.py
+│   └── spiders
+│       ├── base_news_spider.py
+│       ├── guardian_spider.py
+│       ├── guardian_test_spider.py
+│       └── punch_spider.py
+└── scrapy.cfg
 
-8 directories, 12 files
+6 directories, 15 files

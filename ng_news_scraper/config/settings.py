@@ -1,4 +1,4 @@
-# config/settings.py
+# ng_news_scraper/config/settings.py
 SCRAPER_SETTINGS = {
     # Scraper settings
     'ROBOTSTXT_OBEY': True,
@@ -11,11 +11,11 @@ SCRAPER_SETTINGS = {
     
     # Pipeline settings
     'ITEM_PIPELINES': {
-        'scrapers.pipelines.sql_pipeline.SQLAlchemyPipeline': 300,
+        'ng_news_scraper.pipelines.SQLAlchemyPipeline': 300,  # Updated path to match new structure
     },
     
     # Middleware settings
     'DOWNLOADER_MIDDLEWARES': {
-        'scrapers.middlewares.rotate_useragent.RotateUserAgentMiddleware': 400,
+        'ng_news_scraper.middlewares.RotateUserAgentMiddleware': 400,  # Updated path to match new structure
     }
 }

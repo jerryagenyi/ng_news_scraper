@@ -1,8 +1,8 @@
-# scrapers/pipelines/sql_pipeline.py
+# ng_news_scraper/pipelines.py
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from ..config.settings import SCRAPER_SETTINGS
-from models.models import Category, Article, ArticleData
+from ng_news_scraper.config.settings import SCRAPER_SETTINGS
+from ng_news_scraper.models.models import Category, Article, ArticleData
 
 class SQLAlchemyPipeline:
     def __init__(self):
@@ -14,9 +14,9 @@ class SQLAlchemyPipeline:
         try:
             # Check if category already exists
             existing = session.query(Category).filter_by(
-            website=item['website'],
-            category_name=item['category_name']
-        ).first()
+                website=item['website'],
+                category_name=item['category_name']
+            ).first()
             
             if not existing:
                 category = Category(

@@ -1,17 +1,17 @@
-# scrapers/spiders/base_news_spider.py
+# ng_news_scraper/spiders/base_news_spider.py
 import scrapy
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from ..selenium_handlers.dynamic_loader import DynamicContentLoader
+from ..selenium_handlers.base_dynamic_loader import BaseDynamicLoader  # Changed import
 
 class BaseNewsSpider(scrapy.Spider):
     name = 'base_news'
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.dynamic_loader = DynamicContentLoader()
+        self.dynamic_loader = BaseDynamicLoader()  # Changed to match our base class
     
     def start_requests(self):
         for url in self.start_urls:
