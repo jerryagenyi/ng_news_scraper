@@ -1,15 +1,28 @@
+# ../_misc/codebase_make.py
 import os
 
-def concatenate_files(output_file):
+def concatenate_files(output_file, files_to_concatenate):
     with open(output_file, 'w') as output:
-        for root, dirs, files in os.walk('.'):
-            if root != './_misc':  # exclude _misc folder
-                for file in files:
-                    if file.endswith('.py') and file != '__init__.py':
-                        file_path = os.path.join(root, file)
-                        with open(file_path, 'r') as input_file:
-                            output.write('# ' + file_path + '\n')
-                            output.write(input_file.read())
-                            output.write('\n\n')
+        for file_path in files_to_concatenate:
+            with open(file_path, 'r') as input_file:
+                output.write('# ' + file_path + '\n')
+                output.write(input_file.read())
+                output.write('\n\n')
 
-concatenate_files('../_misc/codebase.py')
+files_to_concatenate = [
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/config/settings.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/models/init_db.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/models/models.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/items.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/middlewares.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/pipelines.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/selenium_handlers/base_dynamic_loader.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/selenium_handlers/guardian_dynamic_loader.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/settings.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/base_news_spider.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/guardian_spider.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/guardian_test_spider.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/punch_spider.py',
+]
+
+concatenate_files('./_misc/codebase.py', files_to_concatenate)

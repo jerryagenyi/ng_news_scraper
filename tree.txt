@@ -1,4 +1,9 @@
 .
+├── _misc
+│   ├── PROGRESS.md
+│   ├── codebase.py
+│   ├── codebase_make.py
+│   └── guardian_info.txt
 ├── main.py
 ├── ng_news_scraper
 │   ├── config
@@ -18,6 +23,8 @@
 │       ├── guardian_spider.py
 │       ├── guardian_test_spider.py
 │       └── punch_spider.py
-└── scrapy.cfg
+├── scrapy.cfg
+├── tree.sh
+└── tree.txt
 
-6 directories, 15 files
+7 directories, 21 files
