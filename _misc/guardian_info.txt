@@ -12,3 +12,8 @@ Then the load more button has the strucutre:
 <button class="load-more-button" style="display: block;">&nbsp;<span class="load-more-label">Load more</span><span class="loading-indicator"></span>&nbsp;</button>
 
 Although some categories like METRO doesn't have 'load-more' button nor does it have pagination (https://guardian.ng/category/news/nigeria/metro/)...I am not sure it if was the designers mistake or they don't have much articles. But I am sure our future implementation that checks if anything has changed in the website should be able to catch it when they implement anything new.
+
+next_page = response.css('a.next.page-numbers::attr(href)').get()
+if next_page:
+    self.logger.info(f"Following next page: {next_page}")  # Add this line
+    yield scrapy.Request(url=next_page, callback=self.parse_category, meta={'article_count': article_count, 'website_id': website_id, 'category_id': category_id})

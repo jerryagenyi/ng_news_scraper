@@ -6,8 +6,9 @@ from ng_news_scraper.selenium_handlers.guardian_dynamic_loader import GuardianDy
 from ng_news_scraper.models.models import Category, Article
 from ng_news_scraper.config.settings import SCRAPER_SETTINGS
 import logging
+from .base_news_spider import BaseNewsSpider
 
-class GuardianTestSpider(scrapy.Spider):
+class GuardianTestSpider(BaseNewsSpider):
     name = 'guardian_test'
     allowed_domains = ['guardian.ng']
     article_count = 0
@@ -20,43 +21,12 @@ class GuardianTestSpider(scrapy.Spider):
         'LOG_LEVEL': 'INFO'
     }
 
-    def __init__(self, category_name='Metro', *args, **kwargs):
+    def __init__(self, category_name='Nigeria', *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setup_logging()
-        self.dynamic_loader = GuardianDynamicLoader()
-        self.engine = create_engine(SCRAPER_SETTINGS['DATABASE_URL'])
-        self.Session = sessionmaker(bind=self.engine)
         self.category = self.get_category(category_name)
         if not self.category:
             raise ValueError(f"Category {category_name} not found")
         self.start_urls = [self.category.url]
-
-    def setup_logging(self):
-        self.logger = logging.getLogger(self.name)
-        handler = logging.FileHandler(f'{self.name}.log')
-        handler.setFormatter(logging.Formatter(
-            '%(asctime)s [%(levelname)s] %(message)s'
-        ))
-        self.logger.addHandler(handler)
-        self.logger.setLevel(logging.INFO)
-
-    def get_category(self, category_name):
-        session = self.Session()
-        try:
-            return session.query(Category).filter_by(
-                category_name=category_name
-            ).first()
-        finally:
-            session.close()
-
-    def start_requests(self):
-        self.logger.info(f"Starting article extraction for category: {self.category.category_name}")
-        yield scrapy.Request(
-            self.category.url,
-            self.parse,
-            errback=self.handle_error,
-            dont_filter=True
-        )
 
     def parse(self, response):
         if self.article_count >= self.max_articles:
@@ -89,8 +59,12 @@ class GuardianTestSpider(scrapy.Spider):
             articles_to_process = articles[:self.max_articles - self.article_count]
             saved_count = 0
             
+            self.logger.debug(f"Articles to process: {len(articles_to_process)}")
+            
             for article in articles_to_process:
+                self.logger.debug(f"Processing article: {article['url']}")
                 if not self.is_valid_article(article):
+                    self.logger.debug(f"Invalid article: {article['url']}")
                     continue
                     
                 if not self.article_exists(session, article['url']):
@@ -103,10 +77,15 @@ class GuardianTestSpider(scrapy.Spider):
                     session.add(new_article)
                     saved_count += 1
                     self.article_count += 1
+                    self.logger.debug(f"Article saved: {article['url']}")
+                else:
+                    self.logger.debug(f"Article already exists: {article['url']}")
 
             if saved_count > 0:
                 session.commit()
                 self.logger.info(f"Saved {saved_count} new articles")
+            else:
+                self.logger.info("No new articles to save")
 
         except Exception as e:
             session.rollback()

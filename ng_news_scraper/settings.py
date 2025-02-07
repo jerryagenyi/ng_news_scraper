@@ -22,6 +22,9 @@ BOT_NAME = "ng_news_scraper"
 SPIDER_MODULES = ["ng_news_scraper.spiders"]
 NEWSPIDER_MODULE = "ng_news_scraper.spiders"
 
+# Set settings whose default value is deprecated to a future-proof value
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+FEED_EXPORT_ENCODING = "utf-8"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "ng_news_scraper (+http://www.yourdomain.com)"
@@ -96,7 +99,3 @@ NEWSPIDER_MODULE = "ng_news_scraper.spiders"
 #HTTPCACHE_DIR = "httpcache"
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
-
-# Set settings whose default value is deprecated to a future-proof value
-TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
-FEED_EXPORT_ENCODING = "utf-8"

@@ -14,6 +14,7 @@
 │   │   ├── init_db.py
 │   │   └── models.py
 │   ├── pipelines.py
+│   ├── scrapy.cfg
 │   ├── selenium_handlers
 │   │   ├── base_dynamic_loader.py
 │   │   └── guardian_dynamic_loader.py
@@ -27,4 +28,4 @@
 ├── tree.sh
 └── tree.txt
 
-7 directories, 21 files
+7 directories, 22 files
