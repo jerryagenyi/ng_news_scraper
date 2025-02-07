@@ -4,6 +4,7 @@
 │   ├── codebase.py
 │   ├── codebase_make.py
 │   └── guardian_info.txt
+├── guardian_test.log
 ├── main.py
 ├── ng_news_scraper
 │   ├── config
@@ -12,7 +13,8 @@
 │   ├── middlewares.py
 │   ├── models
 │   │   ├── init_db.py
-│   │   └── models.py
+│   │   ├── models.py
+│   │   └── reset_db.py
 │   ├── pipelines.py
 │   ├── scrapy.cfg
 │   ├── selenium_handlers
@@ -21,11 +23,12 @@
 │   ├── settings.py
 │   └── spiders
 │       ├── base_news_spider.py
-│       ├── guardian_spider.py
+│       ├── blueprint_spider.py
+│       ├── guardian_spider.dat
 │       ├── guardian_test_spider.py
 │       └── punch_spider.py
 ├── scrapy.cfg
 ├── tree.sh
 └── tree.txt
 
-7 directories, 22 files
+7 directories, 25 files

@@ -50,10 +50,11 @@ class BaseNewsSpider(scrapy.Spider):
 
     def handle_pagination(self, response):
         """Handle both traditional pagination and 'load more' buttons"""
-        next_page = response.css('a.next-page::attr(href)').get()
+        next_page = response.css('a.next-page::attr(href)').get()  # Or a.next.page-numbers if that's the correct selector
         if next_page:
+            self.logger.info(f"Following next page: {next_page}")  # Log the next page URL here
             yield scrapy.Request(
-                next_page, 
+                next_page,
                 self.parse,
                 errback=self.handle_error
             )

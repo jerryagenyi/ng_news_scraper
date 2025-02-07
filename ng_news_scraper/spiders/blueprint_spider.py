@@ -26,6 +26,7 @@ class BlueprintSpider(scrapy.Spider):
         session = self.Session()
         category_id = response.meta['category_id']
         article_count = response.meta['article_count']
+        website_id = 1  # Define website_id
         
         for article in response.css('div.archive-content'):
             #if article_count >= 100:
@@ -42,7 +43,6 @@ class BlueprintSpider(scrapy.Spider):
             article_count += 1
             
             yield {
-                'categories_id': category_id,
                 'article_title': title,
                 'article_url': url,
                 'pub_date': date
@@ -50,6 +50,14 @@ class BlueprintSpider(scrapy.Spider):
         
         # Handle pagination
         next_page = response.css('a.next.page-numbers::attr(href)').get()
-        if next_page and article_count < 100:
-            yield scrapy.Request(url=next_page, callback=self.parse_category, meta={'category_id': category_id, 'article_count': article_count})
+        if next_page:  # No more article count limit check
+            yield scrapy.Request(
+                url=next_page,
+                callback=self.parse_category,
+                meta={
+                    'category_id': category_id,
+                    'article_count': article_count,  # Keep article_count for potential use
+                    'website_id': website_id  # Ensure website_id is passed along
+                }
+            )
 
