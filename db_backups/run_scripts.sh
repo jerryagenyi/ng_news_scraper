@@ -1,9 +1,17 @@
-#run_scripts.sh
 #!/bin/bash
 
-# Run the codebase creation script.
-# This will create updated single-file codebase to share with AI assistant for context
-python ../_misc/codebase_make.py
+# Activate virtual environment
+source ../venv/bin/activate
+
+# Set executable permissions
+chmod +x run_scripts.sh
+
+# Run the codebase creation script (if needed)
+# python3 ../_misc/codebase_make.py
 
 # Run the database backup script
-python backup_db.py
+PYTHONPATH=/Users/jeremiah/Projects/ng_news_scraper python3 backup_db.py
+
+# List recent backups
+echo -e "\n📁 Recent backups:"
+ls -lh *.sql.gz | tail -n 5
