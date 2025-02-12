@@ -1,0 +1,27 @@
+Website_id,Website,Website URL,Start/Index Page,First Archive Link,Last Archive Link,Total Archive links
+1,Blue Print,https://blueprint.ng,https://blueprint.ng/sitemap_index.xml,https://blueprint.ng/post-sitemap.xml,https://blueprint.ng/post-sitemap221.xml,221
+2,Channels TV,https://www.channelstv.com,unknown,https://www.channelstv.com/post-sitemap.xml,https://www.channelstv.com/post-sitemap160.xml,160
+3,Daily Nigerian,https://dailynigerian.com,https://dailynigerian.com/wp-sitemap.xml ,https://dailynigerian.com/wp-sitemap-posts-post-1.xml,https://dailynigerian.com/wp-sitemap-posts-post-45.xml,45
+4,Daily Post,https://dailypost.ng,https://dailypost.ng/sitemap_index.xml,https://dailypost.ng/post-sitemap.xml,https://dailypost.ng/post-sitemap404.xml,404
+5,Daily Times,https://dailytimesng.com,https://dailytimesng.com/sitemap_index.xml,https://dailytimesng.com/post-sitemap.xml,https://dailytimesng.com/post-sitemap138.xml,138
+6,Daily Trust,https://dailytrust.com,https://dailytrust.com/sitemap.xml,unknown,unknown,unknown
+7,The Guardian,https://guardian.ng,https://guardian.ng/wp-sitemap.xml,https://guardian.ng/wp-sitemap-posts-post-1.xml,https://guardian.ng/wp-sitemap-posts-post-267.xml,267
+8,Independent,https://independent.ng,https://independent.ng/wp-sitemap.xml,https://independent.ng/wp-sitemap-posts-post-1.xml,https://independent.ng/wp-sitemap-posts-post-252.xml,252
+9,Leadership,https://leadership.ng,unknown,unknown,unknown,unknown
+10,Legit,https://www.legit.ng,https://www.legit.ng/legit/sitemap/www/sitemap.xml,https://www.legit.ng/legit/sitemap/www/article-sitemap-0.xml,https://www.legit.ng/legit/sitemap/www/article-sitemap-20.xml,21
+11,NAN,https://www.nannews.ng,https://nannews.ng/sitemap_index.xml,https://nannews.ng/post-sitemap1.xml,https://nannews.ng/post-sitemap75.xml,75
+12,The Nation,https://thenationonlineng.net,unknown,unknown,unknown,unknown
+13,PM News,https://pmnewsnigeria.com,https://pmnewsnigeria.com/sitemap_index.xml,https://pmnewsnigeria.com/post-sitemap1.xml,https://pmnewsnigeria.com/post-sitemap277.xml,277
+14,Premium Times,https://www.premiumtimesng.com,https://www.premiumtimesng.com/sitemap_index.xml,https://www.premiumtimesng.com/post-sitemap.xml,https://www.premiumtimesng.com/post-sitemap189.xml,189
+15,Punch,https://www.punchng.com,unknown,unknown,unknown,unknown
+16,Sahara Reporters,https://saharareporters.com,unknown,unknown,unknown,unknown
+17,The Cable,https://www.thecable.ng,https://www.thecable.ng/sitemap_index.xml,https://www.thecable.ng/post-sitemap.xml,https://www.thecable.ng/post-sitemap166.xml,166
+18,Telegraph,https://telegraph.ng,https://telegraph.ng/sitemap-index-1.xml,https://telegraph.ng/sitemap-1.xml,https://telegraph.ng/sitemap-3.xml,3
+19,This Day,https://www.thisdaylive.com,unknown,unknown,unknown,unknown
+20,Tribune,https://tribuneonlineng.com,https://tribuneonlineng.com/sitemap_index.xml,https://tribuneonlineng.com/post-sitemap.xml,https://tribuneonlineng.com/post-sitemap304.xml,304
+21,Leadership National Economy,https://nationaleconomy.com/,https://nationaleconomy.com/sitemap_index.xml,unknown,unknown,unknown
+22,Leadership Levogue,https://levogue.leadership.ng/,unknown,unknown,unknown,unknown
+23,NAN PR Wire,https://nanprwire.ng/,https://nanprwire.ng/sitemap_index.xml,http://nanprwire.ng/post-sitemap.xml,http://nanprwire.ng/post-sitemap3.xml,3
+24,Tribune Sports,https://sportingtribune.com,https://sportingtribune.com/sitemap_index.xml,https://sportingtribune.com/post-sitemap.xml,https://sportingtribune.com/post-sitemap17.xml,17
+25,Vanguard,https://www.vanguardngr.com,https://www.vanguardngr.com/sitemap_index.xml,https://www.vanguardngr.com/post-sitemap.xml,https://www.vanguardngr.com/post-sitemap768.xml,768
+26,Vanguard Allure,https://allure.vanguardngr.com/,https://allure.vanguardngr.com/sitemap_index.xml,https://allure.vanguardngr.com/post-sitemap.xml,https://allure.vanguardngr.com/post-sitemap23.xml,21

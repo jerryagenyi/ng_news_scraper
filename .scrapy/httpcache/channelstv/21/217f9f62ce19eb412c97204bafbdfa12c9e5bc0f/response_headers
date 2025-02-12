@@ -1,0 +1,18 @@
+Content-Length: 120
+Date: Tue, 11 Feb 2025 12:20:41 GMT
+Content-Type: text/plain; charset=UTF-8
+Cache-Control: max-age=2592000, public
+Expires: Tue, 11 Mar 2025 00:23:57 GMT
+Vary: Accept-Encoding
+Content-Encoding: gzip
+X-Powered-By: WP Rocket/3.3.5.2
+Cf-Cache-Status: HIT
+Age: 215804
+Last-Modified: Sun, 09 Feb 2025 00:23:57 GMT
+Accept-Ranges: bytes
+Server-Timing: cfCacheStatus;desc="HIT"
+Server-Timing: cfL4;desc="?proto=TCP&rtt=0&min_rtt=0&rtt_var=0&sent=0&recv=0&lost=0&retrans=0&sent_bytes=0&recv_bytes=0&delivery_rate=0&cwnd=0&unsent_bytes=0&cid=a148b553592ddd80&ts=46&x=0"
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=EcAo3dMbcg%2FOSr7LxQ%2FscKDSqowOzw6pCaPLCHkZnQxFPddJL4vstTKuiszklCM508kgEdLL00tijKmSHyn85QVwFQAoaAMidYlSZQfFHTh8H%2BW%2FTVc7JBQOeVtn7%2B6D"}],"group":"cf-nel","max_age":604800}
+Nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
+Server: cloudflare
+Cf-Ray: 91044b5ddbfcb146-MAN

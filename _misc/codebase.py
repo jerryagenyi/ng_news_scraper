@@ -21,6 +21,110 @@ SCRAPER_SETTINGS = {
     }
 }
 
+# /Users/jeremiah/Projects/ng_news_scraper/scrapy.cfg
+# ng_news_scraper/scrapy.cfg
+[settings]
+default = ng_news_scraper.settings
+
+[deploy]
+project = ng_news_scraper
+
+# /Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/scrapy.cfg
+# ng_news_scraper/spiders/base_news_spider.py
+import scrapy
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from ng_news_scraper.selenium_handlers.guardian_dynamic_loader import GuardianDynamicLoader
+from ng_news_scraper.models.models import Category, Article
+from ng_news_scraper.config.settings import SCRAPER_SETTINGS
+import logging
+
+class BaseNewsSpider(scrapy.Spider):
+    name = 'base_news'
+    custom_settings = {
+        'DOWNLOAD_DELAY': 3,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
+        'ROBOTSTXT_OBEY': True,
+        'LOG_LEVEL': 'INFO',
+        'DEPTH_LIMIT' = 0  # 0 means no limit (or set to a specific integer value)
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setup_logging()
+        self.dynamic_loader = GuardianDynamicLoader()
+        self.engine = create_engine(SCRAPER_SETTINGS['DATABASE_URL'])
+        self.Session = sessionmaker(bind=self.engine)
+
+    def setup_logging(self):
+        self.logger = logging.getLogger(self.name)
+        handler = logging.FileHandler(f'{self.name}.log')
+        handler.setFormatter(logging.Formatter(
+            '%(asctime)s [%(levelname)s] %(message)s'
+        ))
+        self.logger.addHandler(handler)
+        self.logger.setLevel(logging.INFO)
+
+    def start_requests(self):
+        for url in self.start_urls:
+            yield scrapy.Request(
+                url, 
+                self.parse,
+                errback=self.handle_error,
+                dont_filter=True
+            )
+
+    def parse(self, response):
+        raise NotImplementedError("Subclasses must implement parse method")
+
+    def handle_pagination(self, response):
+        """Handle both traditional pagination and 'load more' buttons"""
+        next_page = response.css('a.next-page::attr(href)').get()
+        if next_page:
+            yield scrapy.Request(
+                next_page, 
+                self.parse,
+                errback=self.handle_error
+            )
+        else:
+            more_content = self.dynamic_loader.load_more_content(response.url)
+            if more_content:
+                for item in more_content:
+                    yield item
+
+    def get_category(self, category_name):
+        session = self.Session()
+        try:
+            return session.query(Category).filter_by(
+                category_name=category_name
+            ).first()
+        finally:
+            session.close()
+
+    def handle_error(self, failure):
+        self.logger.error(f"Request failed: {failure.value}")
+
+    def closed(self, reason):
+        self.logger.info(f"Spider closed: {reason}")
+        if hasattr(self, 'dynamic_loader'):
+            self.dynamic_loader.close()
+
+    def is_valid_article(self, article):
+        return all([
+            article.get('url'),
+            article.get('title'),
+            len(article['title'].strip()) > 0
+        ])
+
+    def article_exists(self, session, url):
+        return session.query(Article).filter_by(url=url).first() is not None
+
+
+
 # /Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/models/init_db.py
 # models/init_db.py
 import os
@@ -51,34 +155,48 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-Base = declarative_base()  # Add this line before defining models
+Base = declarative_base()
+
+class Website(Base):
+    __tablename__ = 'websites'
+    id = Column(Integer, primary_key=True)
+    website_name = Column(String, nullable=False)
+    website_url = Column(Text)
+    categories = relationship('Category', back_populates='website')
+    articles = relationship('Article', back_populates='website')
 
 class Category(Base):
     __tablename__ = 'categories'
-    category_id = Column(Integer, primary_key=True)
-    website = Column(String, nullable=False)
+    id = Column(Integer, primary_key=True)
+    website_id = Column(Integer, ForeignKey('websites.id'), nullable=False)
     category_name = Column(String, nullable=False)
-    url = Column(String, nullable=False)
+    category_url = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    website = relationship('Website', back_populates='categories')
     articles = relationship('Article', back_populates='category')
 
 class Article(Base):
     __tablename__ = 'articles'
-    article_id = Column(Integer, primary_key=True)
-    category_id = Column(Integer, ForeignKey('categories.category_id'))
-    url = Column(String, unique=True, nullable=False)
+    id = Column(Integer, primary_key=True)
+    website_id = Column(Integer, ForeignKey('websites.id'), nullable=False)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
     article_title = Column(String, nullable=False)
-    scraped = Column(Boolean, default=False)
+    article_url = Column(String, unique=True, nullable=False)
+    author = Column(Text)  # Change from String to Text
+    pub_date = Column(DateTime)
     created_at = Column(DateTime, default=datetime.utcnow)
+    scraped = Column(Boolean, default=False)
+    
+    website = relationship('Website', back_populates='articles')
     category = relationship('Category', back_populates='articles')
     data = relationship('ArticleData', back_populates='article', uselist=False)
 
 class ArticleData(Base):
     __tablename__ = 'article_data'
-    article_data_id = Column(Integer, primary_key=True)
-    article_id = Column(Integer, ForeignKey('articles.article_id'), unique=True)
-    article_title = Column(String)
-    content = Column(Text)
+    id = Column(Integer, primary_key=True)
+    article_id = Column(Integer, ForeignKey('articles.id'), unique=True, nullable=False)
+    article_title = Column(String)  # You might want to remove this if you consider it redundant
+    article_content = Column(Text)
     date = Column(DateTime)
     created_at = Column(DateTime, default=datetime.utcnow)
     article = relationship('Article', back_populates='data')
@@ -226,42 +344,40 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from ng_news_scraper.config.settings import SCRAPER_SETTINGS
-from ng_news_scraper.models.models import Category, Article, ArticleData
+from ng_news_scraper.models.models import Article, ArticleData
 
 class SQLAlchemyPipeline:
     def __init__(self):
-        engine = create_engine(SCRAPER_SETTINGS['DATABASE_URL'])
-        self.Session = sessionmaker(bind=engine)
-    
+        self.engine = create_engine(SCRAPER_SETTINGS['DATABASE_URL'])
+        self.Session = sessionmaker(bind=self.engine)
+
     def process_item(self, item, spider):
         session = self.Session()
         try:
-            # Check if category already exists
-            existing = session.query(Category).filter_by(
-                website=item['website'],
-                category_name=item['category_name']
-            ).first()
-            
-            if not existing:
-                category = Category(
-                    website=item['website'],
-                    category_name=item['category_name'],
-                    url=item['url']
-                )
-                session.add(category)
-                session.commit()
-                spider.logger.info(f"Added new category: {item['category_name']}")
-            else:
-                spider.logger.info(f"Category already exists: {item['category_name']}")
-            
-            return item
-            
+            website_id = item.get('website_id')
+            if not website_id:
+                spider.logger.error("Missing website_id in item")
+                return item
+
+            article = Article(
+                website_id=website_id,
+                category_id=item['category_id'],  # Add this
+                article_title=item['article_title'],
+                article_url=item['article_url'],
+                pub_date=item['pub_date'],  # Add this
+                author=item['author'],      # Add this
+                scraped=False
+            )
+            session.add(article)
+            session.commit()
+
+            spider.logger.info(f"Added new article: {item['article_title']}")
         except Exception as e:
+            spider.logger.error(f"Error processing article: {item['article_title']} - {e}")
             session.rollback()
-            spider.logger.error(f"Error processing category: {str(e)}")
-            raise
         finally:
             session.close()
+        return item
 
 # /Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/selenium_handlers/base_dynamic_loader.py
 # ng_news_scraper/selenium_handlers/base_dynamic_loader.py
@@ -434,6 +550,9 @@ BOT_NAME = "ng_news_scraper"
 SPIDER_MODULES = ["ng_news_scraper.spiders"]
 NEWSPIDER_MODULE = "ng_news_scraper.spiders"
 
+# Set settings whose default value is deprecated to a future-proof value
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+FEED_EXPORT_ENCODING = "utf-8"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "ng_news_scraper (+http://www.yourdomain.com)"
@@ -503,111 +622,107 @@ NEWSPIDER_MODULE = "ng_news_scraper.spiders"
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-#HTTPCACHE_ENABLED = True
-#HTTPCACHE_EXPIRATION_SECS = 0
-#HTTPCACHE_DIR = "httpcache"
-#HTTPCACHE_IGNORE_HTTP_CODES = []
-#HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
-
-# Set settings whose default value is deprecated to a future-proof value
-TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
-FEED_EXPORT_ENCODING = "utf-8"
+HTTPCACHE_ENABLED = True
+HTTPCACHE_EXPIRATION_SECS = 0  # Never expire
+HTTPCACHE_DIR = 'httpcache'
+HTTPCACHE_IGNORE_HTTP_CODES = []
+HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 
 # /Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/base_news_spider.py
 # ng_news_scraper/spiders/base_news_spider.py
 import scrapy
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from ..selenium_handlers.base_dynamic_loader import BaseDynamicLoader  # Changed import
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from ng_news_scraper.selenium_handlers.guardian_dynamic_loader import GuardianDynamicLoader
+from ng_news_scraper.models.models import Category, Article
+from ng_news_scraper.config.settings import SCRAPER_SETTINGS
+import logging
 
 class BaseNewsSpider(scrapy.Spider):
     name = 'base_news'
-    
+    custom_settings = {
+        'DOWNLOAD_DELAY': 3,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
+        'ROBOTSTXT_OBEY': True,
+        'LOG_LEVEL': 'INFO'
+    }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.dynamic_loader = BaseDynamicLoader()  # Changed to match our base class
-    
+        self.setup_logging()
+        self.dynamic_loader = GuardianDynamicLoader()
+        self.engine = create_engine(SCRAPER_SETTINGS['DATABASE_URL'])
+        self.Session = sessionmaker(bind=self.engine)
+
+    def setup_logging(self):
+        self._logger = logging.getLogger(self.name)
+        handler = logging.FileHandler(f'{self.name}.log')
+        handler.setFormatter(logging.Formatter(
+            '%(asctime)s [%(levelname)s] %(message)s'
+        ))
+        self._logger.addHandler(handler)
+        self._logger.setLevel(logging.INFO)
+
+    @property
+    def logger(self):
+        return self._logger
+
     def start_requests(self):
         for url in self.start_urls:
-            yield scrapy.Request(url, self.parse_category)
-    
+            yield scrapy.Request(
+                url, 
+                self.parse,
+                errback=self.handle_error,
+                dont_filter=True
+            )
+
+    def parse(self, response):
+        raise NotImplementedError("Subclasses must implement parse method")
+
     def handle_pagination(self, response):
         """Handle both traditional pagination and 'load more' buttons"""
-        # Try traditional pagination first
-        next_page = response.css('a.next-page::attr(href)').get()
+        next_page = response.css('a.next-page::attr(href)').get()  # Or a.next.page-numbers if that's the correct selector
         if next_page:
-            yield scrapy.Request(next_page, self.parse)
+            self.logger.info(f"Following next page: {next_page}")  # Log the next page URL here
+            yield scrapy.Request(
+                next_page,
+                self.parse,
+                errback=self.handle_error
+            )
         else:
-            # Try 'load more' button using Selenium
             more_content = self.dynamic_loader.load_more_content(response.url)
             if more_content:
-                # Process the additional content
                 for item in more_content:
-                    yield self.parse_article(item)
+                    yield item
 
-
-# /Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/guardian_spider.py
-# ng_news_scraper/spiders/guardian_spider.py
-import scrapy
-from ..selenium_handlers.guardian_dynamic_loader import GuardianDynamicLoader
-from .base_news_spider import BaseNewsSpider
-
-class GuardianSpider(BaseNewsSpider):
-    name = 'guardian'
-    allowed_domains = ['guardian.ng']
-    start_urls = ['https://guardian.ng']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.dynamic_loader = GuardianDynamicLoader()
-    
-    def parse(self, response):
-        # Your list of categories and URLs
-        categories = [
-            # Add your category list here
-            {"name": "Metro", "url": "https://guardian.ng/category/news/nigeria/metro/"},
-            # Add more categories...
-        ]
-        
-        for category in categories:
-            yield scrapy.Request(
-                category['url'],
-                self.parse_article_list,
-                meta={'category': category['name']}
-            )
-    
-    def parse_article_list(self, response):
-        # Use dynamic loader to get all articles
-        articles = self.dynamic_loader.load_more_content(response.url)
-        
-        for article in articles:
-            yield scrapy.Request(
-                article['url'],
-                self.parse_article,
-                meta={
-                    'category': response.meta['category'],
-                    'title': article['title']
-                }
-            )
-    
-    def parse_article(self, response):
+    def get_category(self, category_name):
+        session = self.Session()
         try:
-            # Extract article content
-            content = ' '.join(response.css('div.article-body p::text').getall())
-            date = response.css('time.post-date::attr(datetime)').get()
-            
-            yield {
-                'title': response.meta['title'],
-                'date': date,
-                'content': content,
-                'category': response.meta['category'],
-                'url': response.url
-            }
-        except Exception as e:
-            self.logger.error(f"Error parsing article {response.url}: {str(e)}")
+            return session.query(Category).filter_by(
+                category_name=category_name
+            ).first()
+        finally:
+            session.close()
+
+    def handle_error(self, failure):
+        self.logger.error(f"Request failed: {failure.value}")
+
+    def closed(self, reason):
+        self.logger.info(f"Spider closed: {reason}")
+        if hasattr(self, 'dynamic_loader'):
+            self.dynamic_loader.close()
+
+    def is_valid_article(self, article):
+        return all([
+            article.get('url'),
+            article.get('title'),
+            len(article['title'].strip()) > 0
+        ])
+
+    def article_exists(self, session, url):
+        return session.query(Article).filter_by(url=url).first() is not None
+
 
 # /Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/guardian_test_spider.py
 # ng_news_scraper/spiders/guardian_test_spider.py
@@ -617,41 +732,69 @@ from sqlalchemy.orm import sessionmaker
 from ng_news_scraper.selenium_handlers.guardian_dynamic_loader import GuardianDynamicLoader
 from ng_news_scraper.models.models import Category, Article
 from ng_news_scraper.config.settings import SCRAPER_SETTINGS
+import logging
+from .base_news_spider import BaseNewsSpider
 
-class GuardianTestSpider(scrapy.Spider):
+class GuardianTestSpider(BaseNewsSpider):
     name = 'guardian_test'
     allowed_domains = ['guardian.ng']
     article_count = 0
     max_articles = 100
+    
+    custom_settings = {
+        'DOWNLOAD_DELAY': 3,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
+        'ROBOTSTXT_OBEY': True,
+        'LOG_LEVEL': 'INFO'
+    }
 
-    def __init__(self, category_name='Metro', *args, **kwargs):
+    def __init__(self, category_name='Nigeria', *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.dynamic_loader = GuardianDynamicLoader()
-        self.engine = create_engine(SCRAPER_SETTINGS['DATABASE_URL'])
-        self.Session = sessionmaker(bind=self.engine)
-        
-        # Get category_id
-        session = self.Session()
-        self.category = session.query(Category).filter_by(
-            category_name=category_name
-        ).first()
-        session.close()
-        
+        self.category = self.get_category(category_name)
         if not self.category:
             raise ValueError(f"Category {category_name} not found")
-        
         self.start_urls = [self.category.url]
 
     def parse(self, response):
         if self.article_count >= self.max_articles:
+            self.logger.info(f"Reached max articles limit ({self.max_articles})")
             return
+
+        try:
+            articles = self.dynamic_loader.load_more_content(
+                response.url,
+                max_retries=5,
+                delay=3
+            )
             
-        articles = self.dynamic_loader.load_more_content(response.url)
-        
+            if not articles:
+                self.logger.warning("No articles found in response")
+                return
+
+            self.logger.info(f"Found {len(articles)} articles")
+            self.save_articles(articles)
+
+        except Exception as e:
+            self.logger.error(f"Error in parse: {str(e)}")
+            raise
+        finally:
+            self.dynamic_loader.close()
+
+    def save_articles(self, articles):
         session = self.Session()
         try:
-            for article in articles[:self.max_articles - self.article_count]:
-                if not session.query(Article).filter_by(url=article['url']).first():
+            articles_to_process = articles[:self.max_articles - self.article_count]
+            saved_count = 0
+            
+            self.logger.debug(f"Articles to process: {len(articles_to_process)}")
+            
+            for article in articles_to_process:
+                self.logger.debug(f"Processing article: {article['url']}")
+                if not self.is_valid_article(article):
+                    self.logger.debug(f"Invalid article: {article['url']}")
+                    continue
+                    
+                if not self.article_exists(session, article['url']):
                     new_article = Article(
                         category_id=self.category.category_id,
                         url=article['url'],
@@ -659,17 +802,42 @@ class GuardianTestSpider(scrapy.Spider):
                         scraped=False
                     )
                     session.add(new_article)
+                    saved_count += 1
                     self.article_count += 1
-                    
-            session.commit()
-            self.logger.info(f"Added {self.article_count} articles")
-            
+                    self.logger.debug(f"Article saved: {article['url']}")
+                else:
+                    self.logger.debug(f"Article already exists: {article['url']}")
+
+            if saved_count > 0:
+                session.commit()
+                self.logger.info(f"Saved {saved_count} new articles")
+            else:
+                self.logger.info("No new articles to save")
+
         except Exception as e:
             session.rollback()
             self.logger.error(f"Error saving articles: {str(e)}")
+            raise
         finally:
             session.close()
-            self.dynamic_loader.close()
+
+    def is_valid_article(self, article):
+        return all([
+            article.get('url'),
+            article.get('title'),
+            article['url'].startswith('https://guardian.ng'),
+            len(article['title'].strip()) > 0
+        ])
+
+    def article_exists(self, session, url):
+        return session.query(Article).filter_by(url=url).first() is not None
+
+    def handle_error(self, failure):
+        self.logger.error(f"Request failed: {failure.value}")
+
+    def closed(self, reason):
+        self.logger.info(f"Spider closed: {reason}")
+        self.dynamic_loader.close()
 
 # /Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/punch_spider.py
 # scrapers/spiders/punch_spider.py
@@ -711,4 +879,204 @@ class PunchSpider(BaseNewsSpider):
         }
 
 
+
+# /Users/jeremiah/Projects/ng_news_scraper/scripts/update_articles.py
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import scrapy
+from scrapy.crawler import CrawlerProcess
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Boolean, Text, and_, or_  # Added or_
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship
+from datetime import datetime
+from ng_news_scraper.config.settings import SCRAPER_SETTINGS
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError, TimeoutError
+from scrapy.downloadermiddlewares.retry import RetryMiddleware
+
+Base = declarative_base()
+
+class Website(Base): # Add Website Model
+    __tablename__ = 'websites'
+    id = Column(Integer, primary_key=True)
+    website_name = Column(String, nullable=False)
+    website_url = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    categories = relationship("Category", back_populates="website")
+    articles = relationship("Article", back_populates="website")
+
+class Category(Base):
+    __tablename__ = 'categories'
+    id = Column(Integer, primary_key=True)
+    website_id = Column(Integer, ForeignKey('websites.id'), nullable=False) # Correct foreign key
+    category_name = Column(String, nullable=False)
+    category_url = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    website = relationship("Website", back_populates="categories")
+    articles = relationship("Article", back_populates="category")
+
+class Article(Base):
+    __tablename__ = 'articles'
+    id = Column(Integer, primary_key=True)
+    website_id = Column(Integer, ForeignKey('websites.id'), nullable=False)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)  # Add category_id
+    article_title = Column(String, nullable=False)
+    article_url = Column(String, unique=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    scraped = Column(Boolean, default=False)
+    pub_date = Column(DateTime)
+    author = Column(Text)  # Change from String to Text for unlimited length
+
+    website = relationship('Website', back_populates='articles')
+    category = relationship('Category', back_populates='articles')
+    data = relationship('ArticleData', back_populates='article', uselist=False)
+
+class ArticleData(Base):
+    __tablename__ = 'article_data'
+    id = Column(Integer, primary_key=True)
+    article_id = Column(Integer, ForeignKey('articles.id'), unique=True, nullable=False)
+    article_title = Column(String)
+    article_content = Column(Text)
+    pub_date = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    article = relationship("Article", back_populates="data")
+
+
+# Database connection settings
+DATABASE_URL = SCRAPER_SETTINGS['DATABASE_URL']
+
+# CSS selectors (Make these more specific if needed)
+ARTICLE_PUBLICATION_DATE_SELECTOR = 'time.entry-date::attr(datetime)'
+ARTICLE_AUTHOR_SELECTOR = 'span.author.vcard a::text'
+
+# Create a Scrapy spider to fetch the data
+class ArticleUpdateSpider(scrapy.Spider):
+    name = 'article_update'
+    
+    custom_settings = {
+        'RETRY_ENABLED': True,
+        'RETRY_TIMES': 3,
+        'RETRY_HTTP_CODES': [429, 500, 502, 503, 504, 522, 524, 408, 404],
+        'HTTPERROR_ALLOWED_CODES': [404, 429, 503],
+        'DOWNLOAD_DELAY': 1,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 8
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.engine = create_engine(DATABASE_URL)
+        self.Session = sessionmaker(bind=self.engine)
+        self.stats = {'processed': 0, 'failed': 0}
+
+    def start_requests(self):
+        with self.Session() as session:
+            # Query articles that haven't been updated (null pub_date or author)
+            articles = (
+                session.query(Article)
+                .filter(
+                    and_(
+                        or_(
+                            Article.pub_date.is_(None),
+                            Article.author.is_(None)
+                        )
+                    )
+                )
+                .order_by(Article.id)
+                .all()
+            )
+            
+            self.logger.info(f"Found {len(articles)} articles to update")
+            
+            for article in articles:
+                url = article.article_url
+                if not url.startswith(('http://', 'https://')):
+                    url = f'https://{url}'
+                
+                yield scrapy.Request(
+                    url=url,
+                    callback=self.parse_article,
+                    errback=self.errback_httpbin,
+                    meta={
+                        'article_id': article.id,
+                        'dont_retry': False,
+                        'handle_httpstatus_list': [404, 429, 503]
+                    },
+                    dont_filter=True  # Allow revisiting URLs
+                )
+
+    def parse_article(self, response):
+        try:
+            pub_date = response.css(ARTICLE_PUBLICATION_DATE_SELECTOR).get()
+            author = response.css(ARTICLE_AUTHOR_SELECTOR).get()
+            
+            # Clean and truncate data if needed
+            if author:
+                author = author.strip()[:500]  # Reasonable limit for author names
+            
+            if pub_date:
+                try:
+                    # Ensure pub_date is in proper format
+                    pub_date = datetime.fromisoformat(pub_date.replace('Z', '+00:00'))
+                except ValueError:
+                    self.logger.warning(f"Invalid date format: {pub_date}")
+                    pub_date = None
+
+            with self.Session() as session:
+                article = session.query(Article).get(response.meta['article_id'])
+                if article:
+                    if pub_date:
+                        article.pub_date = pub_date
+                    if author:
+                        article.author = author
+                    try:
+                        session.commit()
+                        self.stats['processed'] += 1
+                    except Exception as e:
+                        session.rollback()
+                        self.logger.error(f"Database error: {e}")
+                        self.stats['failed'] += 1
+
+        except Exception as e:
+            self.logger.error(f"Error processing article {response.url}: {e}")
+            self.stats['failed'] += 1
+
+    def errback_httpbin(self, failure):
+        """Handle request errors"""
+        if failure.check(HttpError):
+            response = failure.value.response
+            self.logger.error(f'HttpError on {response.url} - {response.status}')
+        elif failure.check(DNSLookupError):
+            request = failure.request
+            self.logger.error(f'DNSLookupError on {request.url}')
+        elif failure.check(TimeoutError):
+            request = failure.request
+            self.logger.error(f'TimeoutError on {request.url}')
+        
+        self.stats['failed'] += 1
+
+    def closed(self, reason):
+        """Log statistics when spider closes"""
+        self.logger.info(f"Spider closed: {reason}")
+        self.logger.info(f"Processed: {self.stats['processed']}, Failed: {self.stats['failed']}")
+
+# Function to update the articles in the database
+def update_articles():
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
+        'LOG_LEVEL': 'INFO',
+        'COOKIES_ENABLED': True,
+        'DOWNLOAD_DELAY': 1,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 8,
+        'RETRY_ENABLED': True,
+        'RETRY_TIMES': 3,
+        'RETRY_HTTP_CODES': [429, 500, 502, 503, 504, 522, 524, 408, 404],
+        'HTTPERROR_ALLOWED_CODES': [404, 429, 503]
+    })
+
+    process.crawl(ArticleUpdateSpider)
+    process.start()
+
+# Run the update
+if __name__ == '__main__':
+    update_articles()
 

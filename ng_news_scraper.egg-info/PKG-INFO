@@ -1,0 +1,11 @@
+Metadata-Version: 2.2
+Name: ng_news_scraper
+Version: 0.1
+Requires-Dist: scrapy>=2.12.0
+Requires-Dist: sqlalchemy>=2.0.0
+Requires-Dist: psycopg2-binary>=2.9.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: selenium>=4.0.0
+Requires-Dist: python-dateutil>=2.8.0
+Requires-Dist: pytz>=2024.1
+Dynamic: requires-dist

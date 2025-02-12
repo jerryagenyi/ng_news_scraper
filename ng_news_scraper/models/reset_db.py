@@ -35,6 +35,8 @@ class Article(Base):
     article_url = Column(String, unique=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     scraped = Column(Boolean, default=False)
+    pub_date = Column(DateTime)  # Add this line
+    author = Column(String)  # Add this line
     category = relationship('Category', back_populates='articles')
     data = relationship('ArticleData', back_populates='article', uselist=False)
 

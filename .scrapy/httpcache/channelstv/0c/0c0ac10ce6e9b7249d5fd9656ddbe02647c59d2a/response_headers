@@ -1,0 +1,17 @@
+Date: Tue, 11 Feb 2025 12:59:27 GMT
+Content-Type: text/html; charset=UTF-8
+X-Powered-By: PHP/7.2.24
+X-Cf-Powered-By: WP Rocket 3.3.5.2
+Link: <https://www.channelstv.com/wp-json/>; rel="https://api.w.org/", <https://www.channelstv.com/wp-json/wp/v2/categories/9>; rel="alternate"; type="application/json"
+Last-Modified: Mon, 10 Feb 2025 21:43:56 GMT
+Cache-Control: max-age=0
+Expires: Tue, 11 Feb 2025 12:59:27 GMT
+Vary: Accept-Encoding
+Cf-Cache-Status: REVALIDATED
+Server-Timing: cfCacheStatus;desc="REVALIDATED"
+Server-Timing: cfL4;desc="?proto=TCP&rtt=0&min_rtt=0&rtt_var=0&sent=0&recv=0&lost=0&retrans=0&sent_bytes=0&recv_bytes=0&delivery_rate=0&cwnd=0&unsent_bytes=0&cid=859bbd48f54fb0d7&ts=2314836&x=0"
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=uFTy40lkL%2B6JKx855TQElpJf61vV%2BgWlsQi9tSLyOli8KHw4isPEoDbNza%2Fp4g9qmV1B2hFnJXAVCTeu4mNeAkpH6NKJv4Y2sqwUaOg5JZPO3%2F88%2FcNQD3eDu9n3U9RtW0vuIQ%3D%3D"}],"group":"cf-nel","max_age":604800}
+Nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
+Server: cloudflare
+Cf-Ray: 9104842a9c1db146-MAN
+Content-Encoding: gzip

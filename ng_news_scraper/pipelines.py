@@ -12,17 +12,19 @@ class SQLAlchemyPipeline:
     def process_item(self, item, spider):
         session = self.Session()
         try:
+            # Remove any explicit ID handling
             article = Article(
-                website_id=1,  # Set website_id to 1 (Blueprint) directly
+                website_id=item['website_id'],
+                category_id=item['category_id'],
                 article_title=item['article_title'],
                 article_url=item['article_url'],
+                author=item.get('author'),
+                pub_date=item.get('pub_date'),
                 scraped=False
             )
             session.add(article)
             session.commit()
-
-            # ... (Rest of your pipeline code for ArticleData)
-            spider.logger.info(f"Added new article: {item['article_title']}")
+            spider.logger.info(f"Added article: {item['article_title']}")
         except Exception as e:
             spider.logger.error(f"Error processing article: {item['article_title']} - {e}")
             session.rollback()

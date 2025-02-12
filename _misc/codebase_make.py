@@ -11,6 +11,8 @@ def concatenate_files(output_file, files_to_concatenate):
 
 files_to_concatenate = [
     '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/config/settings.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/scrapy.cfg',
+    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/scrapy.cfg',
     '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/models/init_db.py',
     '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/models/models.py',
     '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/items.py',
@@ -20,9 +22,9 @@ files_to_concatenate = [
     '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/selenium_handlers/guardian_dynamic_loader.py',
     '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/settings.py',
     '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/base_news_spider.py',
-    '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/guardian_spider.py',
     '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/guardian_test_spider.py',
     '/Users/jeremiah/Projects/ng_news_scraper/ng_news_scraper/spiders/punch_spider.py',
+    '/Users/jeremiah/Projects/ng_news_scraper/scripts/update_articles.py',
 ]
 
-concatenate_files('./_misc/codebase.py', files_to_concatenate)
+concatenate_files('codebase.py', files_to_concatenate)

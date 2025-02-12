@@ -1,0 +1,7 @@
+Sitemap Processing Report
+========================
+Total URLs found: 159553
+Successfully added: 159553
+Failed URLs: 0
+Skipped URLs: 0
+

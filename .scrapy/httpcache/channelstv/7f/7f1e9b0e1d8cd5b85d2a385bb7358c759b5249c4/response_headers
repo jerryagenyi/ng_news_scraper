@@ -1,0 +1,16 @@
+Date: Tue, 11 Feb 2025 12:20:42 GMT
+Content-Type: text/html; charset=UTF-8
+X-Powered-By: PHP/7.2.24
+X-Cf-Powered-By: WP Rocket 3.3.5.2
+X-Redirect-By: WordPress
+Location: https://www.channelstv.com/category/politics/
+Cache-Control: max-age=0
+Expires: Tue, 11 Feb 2025 12:20:42 GMT
+Vary: Accept-Encoding
+Cf-Cache-Status: EXPIRED
+Server-Timing: cfCacheStatus;desc="EXPIRED"
+Server-Timing: cfL4;desc="?proto=TCP&rtt=0&min_rtt=0&rtt_var=0&sent=0&recv=0&lost=0&retrans=0&sent_bytes=0&recv_bytes=0&delivery_rate=0&cwnd=0&unsent_bytes=0&cid=a148b553592ddd80&ts=1073&x=0"
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=mHRdipqwdT8jmAn9ghDDGWMjAETdh%2BwgpF8PlSDj6TE6L36ZsOeGTA0oPI1gzeVEcoSBzI7WstHZR2Rxb41WHHchOzbvD%2BtaIQdmZm9nY6OhM6k45H9ArA57WHSmSP81"}],"group":"cf-nel","max_age":604800}
+Nel: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
+Server: cloudflare
+Cf-Ray: 91044b625a88b146-MAN
